@@ -1,6 +1,25 @@
-export default function generate (obj, options = {}) {
+import { parseFilters } from '../../parser/filter-parser'
+
+export default function generate( obj, options = {}) {
   const { tag, attrsMap = {}, children, text, ifConditions } = obj
-  if (!tag) return text
+  if (!tag) {
+    if (text !== null) {
+      let result = ''
+      const textSplit = text.split(/({{.*?}})/ig)
+      textSplit.forEach(temp => {
+        if (/^{{/.test(temp) && /}}$/.test(temp)) {
+          temp = temp.replace(/{|}/ig, '')
+          temp = parseFilters(temp, options.filters)
+          result += '{{' + temp + '}}'
+        } else {
+          result += temp
+        }
+      })
+      return result
+    } else {
+      return text
+    }
+  }
   let child = ''
   if (children && children.length) {
     // 递归子节点
@@ -25,6 +44,6 @@ export default function generate (obj, options = {}) {
   return `<${tag}${attrs ? ' ' + attrs : ''}>${child || ''}</${tag}>${ifConditionsArr.join('')}`
 }
 
-function convertAttr (key, val) {
+function convertAttr(key, val) {
   return (val === '' || typeof val === 'undefined') ? key : `${key}="${val}"`
 }
