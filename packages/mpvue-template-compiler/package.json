@@ -1,6 +1,6 @@
 {
   "name": "cb-mpvue-template-compiler",
-  "version": "1.0.13",
+  "version": "1.0.13.1",
   "description": "mpvue template compiler for Vue",
   "main": "index.js",
   "repository": {
