@@ -46,7 +46,16 @@ function getHandle (vnode, eventid, eventTypes = []) {
   const { attrs, on, model } = data
   if (attrs && on && attrs['eventid'] === eventid) {
     eventTypes.forEach(et => {
-      const h = on[et]
+      let h = on[et]
+      if (!h && et.indexOf('update') === 0) {
+        et = 'update:' + et.replace('update', '')
+        const temp = on[et]
+        h = function (event) {
+          if (event && event.mp) {
+            temp(event.mp.detail)
+          }
+        }
+      }
       if (typeof h === 'function') {
         res.push(h)
       } else if (Array.isArray(h)) {

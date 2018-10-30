@@ -4414,7 +4414,11 @@ var attrs = {
       } else if (/^v\-on\:/i.test(key)) {
         attrs = this$1.event(key, val, attrs, tag);
       } else if (/^v\-bind\:/i.test(key)) {
-        attrs = this$1.bind(key, val, attrs, tag, attrsMap['wx:key']);
+        if (key.indexOf('.sync') > -1) {
+          attrs = this$1.bindWithSync(key, val, attrs);
+        } else {
+          attrs = this$1.bind(key, val, attrs, tag, attrsMap['wx:key']);
+        }
       } else if (/^v\-model/.test(key)) {
         attrs = this$1.model(key, val, attrs, tag, log);
       } else if (wxmlDirectiveMap[key]) {
@@ -4513,6 +4517,13 @@ var attrs = {
       attrs[name] = "{{" + val + "}}";
     }
 
+    return attrs
+  },
+
+  bindWithSync: function bind (key, val, attrs) {
+    var name = /^v\-bind\:(.*?)\.sync/.exec(key)[1];
+    attrs[name] = '{{' + val + '}}';
+    attrs['bindupdate' + name] = 'handleProxy';
     return attrs
   },
 

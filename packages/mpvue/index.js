@@ -4148,7 +4148,7 @@ Object.defineProperty(Vue$3.prototype, '$ssrContext', {
 });
 
 Vue$3.version = '2.4.1';
-Vue$3.mpvueVersion = '1.0.13';
+Vue$3.mpvueVersion = '1.0.1301';
 
 /* globals renderer */
 
@@ -5505,6 +5505,15 @@ function getHandle (vnode, eventid, eventTypes) {
   if (attrs && on && attrs['eventid'] === eventid) {
     eventTypes.forEach(function (et) {
       var h = on[et];
+      if (!h && et.indexOf('update') === 0) {
+        et = 'update:' + et.replace('update', '');
+        var temp = on[et];
+        h = function (event) {
+          if (event && event.mp) {
+            temp(event.mp.detail);
+          }
+        };
+      }
       if (typeof h === 'function') {
         res.push(h);
       } else if (Array.isArray(h)) {
