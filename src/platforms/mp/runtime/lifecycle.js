@@ -333,7 +333,10 @@ export function initMP (mpType, next) {
 
       // 页面相关事件处理函数--监听用户下拉动作
       onPullDownRefresh () {
-        callHook(rootVueVM, 'onPullDownRefresh')
+        let done = function () {
+          wx.stopPullDownRefresh()
+        }
+        callHook(rootVueVM, 'onPullDownRefresh', done)
       },
 
       // 页面上拉触底事件的处理函数

@@ -4148,7 +4148,7 @@ Object.defineProperty(Vue$3.prototype, '$ssrContext', {
 });
 
 Vue$3.version = '2.4.1';
-Vue$3.mpvueVersion = '1.0.1301';
+Vue$3.mpvueVersion = '1.0.1302';
 
 /* globals renderer */
 
@@ -5268,7 +5268,10 @@ function initMP (mpType, next) {
 
       // 页面相关事件处理函数--监听用户下拉动作
       onPullDownRefresh: function onPullDownRefresh () {
-        callHook$1(rootVueVM, 'onPullDownRefresh');
+        var done = function () {
+          wx.stopPullDownRefresh();
+        };
+        callHook$1(rootVueVM, 'onPullDownRefresh', done);
       },
 
       // 页面上拉触底事件的处理函数
